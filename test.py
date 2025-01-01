@@ -64,13 +64,10 @@ def process_excel_files(folder_path):
 
                 # Remove commas from numeric columns, then convert to numeric
                 for col in numeric_columns:
-                    if df[col].dtype == 'object':  # Check if column is a string
-                        df[col] = df[col].str.replace(",", "")
-                    df[col] = pd.to_numeric(df[col], errors="coerce")  # Convert to float, forcing errors to NaN
+                    df[col] = df[col].str.replace(",", "").astype(float)
 
                 # Append the cleaned DataFrame to the list
                 all_data.append(df)
-
             except Exception as e:
                 print(f"Error processing file {file_name}: {e}")
 
@@ -102,3 +99,6 @@ try:
     print("Data saved successfully as Excel and Parquet files.")
 except Exception as e:
     print(f"An error occurred: {e}")
+
+# df=pd.read_parquet("data/cleaned_data_files/combined_payroll_data.parquet")
+# print(df.head())

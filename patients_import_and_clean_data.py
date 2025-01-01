@@ -7,7 +7,7 @@ from datetime import datetime
 
 
 def process_csv_file(
-    input_file_path, output_file_path, columns_to_remove, birthdate_column
+    input_file_path, output_file_path, parquet_output_file_path, columns_to_remove, birthdate_column
 ):
     """
     This function imports a CSV file, removes specified columns, converts the birthdate column to MM/DD/YYYY format,
@@ -56,8 +56,8 @@ def process_csv_file(
 
     # Save the resulting DataFrame as a new CSV file
     df.to_csv(output_file_path, index=False)
-
-    print(f"Processed CSV file saved at: {output_file_path}")
+    df.to_parquet(parquet_output_file_path, compression="gzip")
+    print(f"Processed Parquet and CSV files saved at: {output_file_path}, {parquet_output_file_path}")
 
 
 # Path to your input CSV file
@@ -65,6 +65,7 @@ input_file = "data/CureRite/patients_export.csv"
 
 # Path to save the output CSV file
 output_file = "data/cleaned_data_files/patients_cleaned.csv"
+parquet_output_file_path = "data/cleaned_data_files/patients_cleaned.parquet"
 # Columns to remove from the data frame
 columns_to_remove = [
     "patient_project_number",
@@ -74,4 +75,4 @@ columns_to_remove = [
 # Name of the birthdate column
 birthdate_column = "birthdate"
 
-process_csv_file(input_file, output_file, columns_to_remove, birthdate_column)
+process_csv_file(input_file, output_file, parquet_output_file_path, columns_to_remove, birthdate_column)
