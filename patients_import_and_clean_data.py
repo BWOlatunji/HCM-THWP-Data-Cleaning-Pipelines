@@ -7,20 +7,26 @@ from datetime import datetime
 
 
 def process_csv_file(
-    input_file_path, output_file_path, parquet_output_file_path, columns_to_remove, birthdate_column
+    input_file_path,
+    output_file_path,
+    parquet_output_file_path,
+    columns_to_remove,
+    birthdate_column,
 ):
     """
     This function imports a CSV file, removes specified columns, converts the birthdate column to MM/DD/YYYY format,
     adds a new column 'age' calculated from the birthdate, and saves the resulting DataFrame as a new CSV file.
 
     :param input_file_path: Path to the input CSV file.
-    :param output_file_path: Path to save the processed CSV file.
+    :param output_file_path: Path to save the processed data as a CSV file.
+    :param parquet_output_file_path: Path to save the processed data as a Parquet file.
     :param columns_to_remove: List of columns to be removed.
     :param birthdate_column: The name of the birthdate column to convert and calculate age from.
     """
     # Import the CSV file into a DataFrame
     df = pd.read_csv(
         input_file_path,
+        skiprows=1,
         names=[
             "patient_id",
             "patient_project_number",
@@ -33,6 +39,7 @@ def process_csv_file(
             "ward_name",
             "town_name",
             "facility_name",
+            "is_caregiver",
             "created_at",
         ],
     )
@@ -57,7 +64,9 @@ def process_csv_file(
     # Save the resulting DataFrame as a new CSV file
     df.to_csv(output_file_path, index=False)
     df.to_parquet(parquet_output_file_path, compression="gzip")
-    print(f"Processed Parquet and CSV files saved at: {output_file_path}, {parquet_output_file_path}")
+    print(
+        f"Processed Parquet and CSV files saved at: {output_file_path}, {parquet_output_file_path}"
+    )
 
 
 # Path to your input CSV file
@@ -70,9 +79,16 @@ parquet_output_file_path = "data/cleaned_data_files/patients_cleaned.parquet"
 columns_to_remove = [
     "patient_project_number",
     "patient_card_number",
+    "is_caregiver",
     "created_at",
 ]
 # Name of the birthdate column
 birthdate_column = "birthdate"
 
-process_csv_file(input_file, output_file, parquet_output_file_path, columns_to_remove, birthdate_column)
+process_csv_file(
+    input_file,
+    output_file,
+    parquet_output_file_path,
+    columns_to_remove,
+    birthdate_column,
+)
